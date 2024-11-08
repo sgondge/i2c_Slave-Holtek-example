@@ -1,0 +1,64 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.36.0.0
+Copyright (C) 2021 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: sagar g none Flex license: MDK Holtek Cortex-M0+ Edition 5.36 (Flex) (mdk_holtek_cm0) Operation stops: 26 Mar 2025
+ 
+Tool Versions:
+Toolchain:       MDK Holtek Cortex-M0+ Edition 5.36 (Flex)  Version: 5.36.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 7 (build 960)
+Assembler:       Armasm.exe V5.06 update 7 (build 960)
+Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
+Library Manager: ArmAr.exe V5.06 update 7 (build 960)
+Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
+CPU DLL:         SARMCM3.DLL V5.36.0.0
+Dialog DLL:      DARMCM1.DLL V1.19.4.0
+Target DLL:      CMSIS_AGDI.dll V1.33.0.0
+Dialog DLL:      TARMCM1.DLL V1.14.4.0
+ 
+<h2>Project:</h2>
+C:\Users\g2306\Documents\HT32_STD_5xxxx_FWLib_V1.13.1_8190\example\I2C\7_bit_mode_slave\MDK_ARMv5\Project_54253.uvprojx
+Project File Date:  10/03/2024
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'HT32'
+compiling main.c...
+..\main.c(171): warning:  #550-D: parameter "padding_1"  was set but never used
+  													 uint8_t *crc16_ms, uint8_t *crc16_ls, uint8_t padding_1, uint8_t padding_2, uint8_t padding_3){
+..\main.c(171): warning:  #550-D: parameter "padding_2"  was set but never used
+  													 uint8_t *crc16_ms, uint8_t *crc16_ls, uint8_t padding_1, uint8_t padding_2, uint8_t padding_3){
+..\main.c(171): warning:  #550-D: parameter "padding_3"  was set but never used
+  													 uint8_t *crc16_ms, uint8_t *crc16_ls, uint8_t padding_1, uint8_t padding_2, uint8_t padding_3){
+..\main.c(282): warning:  #177-D: variable "t"  was declared but never referenced
+  	u8 t;
+..\main.c: 4 warnings, 0 errors
+linking...
+Program Size: Code=2132 RO-data=32 RW-data=16 ZI-data=552  
+FromELF: creating hex file...
+After Build - User command #1: fromelf --bin -o ".\HT32\54253\Obj\HT32.axf.bin" ".\HT32\54253\Obj\HT32.axf"
+".\HT32\54253\Obj\HT32.axf" - 0 Error(s), 4 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: Holtek
+                https://mcu.holtek.com.tw/pack/Holtek.HT32_DFP.1.0.55.pack
+                Holtek.HT32_DFP.1.0.55
+                Holtek HT32 Family Support
+   * Component: HT32 Stack Usage Analysis Version: 1.0.0
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_HT32
+  C:\Users\g2306\AppData\Local\Arm\Packs\Holtek\HT32_DFP\1.0.55\ARM\INC\Holtek\HT32F5xxxx
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: Holtek::HT32 Stack Usage Analysis:HT32 Stack Usage Analysis:1.0.0
+Build Time Elapsed:  00:00:13
+</pre>
+</body>
+</html>
