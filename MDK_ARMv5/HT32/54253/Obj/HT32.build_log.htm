@@ -22,26 +22,20 @@ Dialog DLL:      TARMCM1.DLL V1.14.4.0
  
 <h2>Project:</h2>
 C:\Users\g2306\Documents\HT32_STD_5xxxx_FWLib_V1.13.1_8190\example\I2C\7_bit_mode_slave\MDK_ARMv5\Project_54253.uvprojx
-Project File Date:  10/03/2024
+Project File Date:  11/22/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'HT32'
 compiling main.c...
-..\main.c(171): warning:  #550-D: parameter "padding_1"  was set but never used
-  													 uint8_t *crc16_ms, uint8_t *crc16_ls, uint8_t padding_1, uint8_t padding_2, uint8_t padding_3){
-..\main.c(171): warning:  #550-D: parameter "padding_2"  was set but never used
-  													 uint8_t *crc16_ms, uint8_t *crc16_ls, uint8_t padding_1, uint8_t padding_2, uint8_t padding_3){
-..\main.c(171): warning:  #550-D: parameter "padding_3"  was set but never used
-  													 uint8_t *crc16_ms, uint8_t *crc16_ls, uint8_t padding_1, uint8_t padding_2, uint8_t padding_3){
-..\main.c(282): warning:  #177-D: variable "t"  was declared but never referenced
-  	u8 t;
-..\main.c: 4 warnings, 0 errors
+..\main.c(87): warning:  #177-D: variable "last_bftm0_ct"  was declared but never referenced
+  static uint32_t last_bftm0_ct;
+..\main.c: 1 warning, 0 errors
 linking...
-Program Size: Code=2132 RO-data=32 RW-data=16 ZI-data=552  
+Program Size: Code=2208 RO-data=544 RW-data=20 ZI-data=548  
 FromELF: creating hex file...
 After Build - User command #1: fromelf --bin -o ".\HT32\54253\Obj\HT32.axf.bin" ".\HT32\54253\Obj\HT32.axf"
-".\HT32\54253\Obj\HT32.axf" - 0 Error(s), 4 Warning(s).
+".\HT32\54253\Obj\HT32.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -58,7 +52,7 @@ Package Vendor: Holtek
 <h2>Collection of Component Files used:</h2>
 
    * Component: Holtek::HT32 Stack Usage Analysis:HT32 Stack Usage Analysis:1.0.0
-Build Time Elapsed:  00:00:13
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

@@ -1,6 +1,7 @@
 --cpu Cortex-M0+
 ".\ht32\54253\obj\main.o"
 ".\ht32\54253\obj\ht32f5xxxx_01_it.o"
+".\ht32\54253\obj\bftm0.o"
 ".\ht32\54253\obj\ht32_op.o"
 ".\ht32\54253\obj\system_ht32f5xxxx_09.o"
 ".\ht32\54253\obj\startup_ht32f5xxxx_09.o"

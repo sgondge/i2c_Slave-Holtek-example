@@ -48,3 +48,4 @@
 .\ht32\54253\obj\main.o: ..\..\..\..\utilities\common/lcd.h
 .\ht32\54253\obj\main.o: ..\ht32_board_config.h
 .\ht32\54253\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\ht32\54253\obj\main.o: ..\BFTM0.h

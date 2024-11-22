@@ -29,15 +29,15 @@ void I2C_Slave_Receiver(void);
 void I2C_Slave_Transmitter(void);
 int clear_request_line(uint8_t plate);
 int set_request_line(uint8_t plate);
-int send_command_to_pbci(uint8_t plateID, uint8_t power, uint8_t temperature, uint8_t crc16_ms, 
-												 uint8_t crc16_ls,uint8_t padding_1, uint8_t padding_2, uint8_t padding_3);
+int send_command_to_pbci(uint8_t plateID, uint8_t power, uint8_t temperature, uint8_t crc16_ls, 
+												 uint8_t crc16_ms,uint8_t padding_1, uint8_t padding_2, uint8_t padding_3);
 int receive_data_from_pbci(uint8_t *memory_address, uint8_t *manufacturerID, uint8_t *plateIDReceived, uint8_t *errorCode, 
-                           uint8_t *voltage_ms, uint8_t *voltage_ls, uint8_t *current, uint8_t *wattHour_ms,
-                           uint8_t *wattHour_ls, uint8_t *igbtTemp, uint8_t *glassSurfaceTemp_ms, uint8_t *glassSurfaceTemp_ls,
-													 uint8_t *crc16_ms, uint8_t *crc16_ls, uint8_t *padding_1, uint8_t *padding_2, uint8_t *padding_3); 
+                           uint8_t *voltage_ls, uint8_t *voltage_ms, uint8_t *current, uint8_t *wattHour_ls,
+                           uint8_t *wattHour_ms, uint8_t *igbtTemp, uint8_t *glassSurfaceTemp_ls, uint8_t *glassSurfaceTemp_ms,
+													 uint8_t *crc16_ls, uint8_t *crc16_ms, uint8_t *padding_1, uint8_t *padding_2, uint8_t *padding_3); 
 //unsigned int GetCRC16(volatile unsigned char *puchMsg, unsigned int DataLen);
 void updateParametersAndSendCommand(void);
-void Clear_I2C_Buffer(void);
+//void Clear_I2C_Buffer(void);
 void I2C_Reset(void);
 
 unsigned short GetCrc_16(unsigned char * pData, int nLength, unsigned short init, const unsigned short *ptable);
@@ -96,19 +96,13 @@ uint8_t *memory_address, *manufacturerID, *plateIDReceived, *errorCode, *igbtTem
   ***********************************************************************************************************/
 int main(void)
 {
+
   I2C_Configuration();                /* I2C configuration                                                  */
 	plate_req_Configuration();
-//	plateID = 0;
-//	power = 0;
-//	temperature = 0;
-//	crc16_ms= 0;
-//	crc16_ls= 0;
 	padding_1= 0;
 	padding_2= 0;
 	padding_3 = 0;
 
-	Clear_I2C_Buffer();	
-	
   while (1){		
 			I2C_Slave_Receiver();
 			updateParametersAndSendCommand();
@@ -116,11 +110,11 @@ int main(void)
 }
 
 void I2C_Reset(void) {
-  // Disable I2C peripheral
   I2C_Cmd(HTCFG_I2C_SLAVE_PORT, DISABLE);
-  // Reinitialize I2C peripheral
   I2C_Configuration();
 }
+
+/* // Unnecessary Clear_I2C_Buffer function
 void Clear_I2C_Buffer(void) {
 	int i;
   for (i = 0; i < BufferSize; i++) {
@@ -130,10 +124,10 @@ void Clear_I2C_Buffer(void) {
     I2C_Slave_Buffer_Tx[i] = 0;
   }
 }
+*/
 
 
 void updateParametersAndSendCommand() {	
-
 		unsigned int CRC_16_value = 0;
 		unsigned char Data[3];
 		powerSend = 9;
@@ -149,15 +143,6 @@ void updateParametersAndSendCommand() {
 		crc16_ms = (CRC_16_value >> 8) & 0xFF; // Most significant byte
 		crc16_ls = CRC_16_value & 0xFF;        // Least significant byte
 					
-//		I2C_Slave_Buffer_Tx[0] = plateID;
-//  	I2C_Slave_Buffer_Tx[1] = power;
-//		I2C_Slave_Buffer_Tx[2] = temperature;
-//		I2C_Slave_Buffer_Tx[3] = crc16_ms;
-//		I2C_Slave_Buffer_Tx[4] = crc16_ls;
-//		I2C_Slave_Buffer_Tx[5] = padding_1;
-//		I2C_Slave_Buffer_Tx[6] = padding_1;
-//		I2C_Slave_Buffer_Tx[7] = padding_1;
-	
 		send_command_to_pbci(plateID, powerSend, temperature, crc16_ms, crc16_ls, padding_1, padding_1, padding_1);
 	}
 
@@ -178,33 +163,14 @@ unsigned short CRC_GetModbus16(unsigned char *pdata, int len)
   return GetCrc_16(pdata, len, 0xFFFF, g_McRctable_16);
 }
 	
-//unsigned int GetCRC16(volatile unsigned char *puchMsg, unsigned int DataLen)
-//{
-//   unsigned int CRC16_Data = 0xFFFF; // CRC16 variable register
-//   unsigned char i = 0;
-//   
-//   while (DataLen--)  
-//   {
-//      CRC16_Data ^= *puchMsg++;  // CRC16 Register "XOR" DATA
-//      for (i = 0; i < 8; i++)  // Count 8
-//      {
-//         if (CRC16_Data & 0x01)    // 0 bit for Hi do >>1 and "XOR"0xA001 else do >>1
-//             CRC16_Data = (CRC16_Data >> 1) ^ 0xA001;
-//         else
-//             CRC16_Data = CRC16_Data >> 1;  
-//      }
-//   }  
-//   return CRC16_Data;  	
-//}
-
 // I2C send command function implementation
 int send_command_to_pbci(uint8_t plateID, uint8_t power, uint8_t temperature,uint8_t crc16_ms, uint8_t crc16_ls,uint8_t padding_1, uint8_t padding_2, uint8_t padding_3) {
 
 		I2C_Slave_Buffer_Tx[0] = plateID;              // Plate ID (1 or 2)
     I2C_Slave_Buffer_Tx[1] = power;                // Power level (0 to 10)
     I2C_Slave_Buffer_Tx[2] = temperature;          // Temperature value (0 to 240)
-    I2C_Slave_Buffer_Tx[3] = crc16_ls;                    // CRC High Byte (set to 0 for now)
-    I2C_Slave_Buffer_Tx[4] = crc16_ms;                    // CRC Low Byte (set to 0 for now)
+    I2C_Slave_Buffer_Tx[3] = crc16_ls;                    // CRC Low Byte (set to 0 for now)
+    I2C_Slave_Buffer_Tx[4] = crc16_ms;                    // CRC High Byte (set to 0 for now)
     I2C_Slave_Buffer_Tx[5] = padding_1;                    // Padding
     I2C_Slave_Buffer_Tx[6] = padding_2;                    // Padding
     I2C_Slave_Buffer_Tx[7] = padding_3;                    // Padding
@@ -215,9 +181,9 @@ int send_command_to_pbci(uint8_t plateID, uint8_t power, uint8_t temperature,uin
 
 // I2C receive data function implementation (simplified for clarity)
 int receive_data_from_pbci(uint8_t *memory_address, uint8_t *manufacturerID, uint8_t *plateIDReceived, uint8_t *errorCode, 
-                           uint8_t *voltage_ms, uint8_t *voltage_ls, uint8_t *current, uint8_t *wattHour_ms,
-                           uint8_t *wattHour_ls, uint8_t *igbtTemp, uint8_t *glassSurfaceTemp_ms, uint8_t *glassSurfaceTemp_ls,
-													 uint8_t *crc16_ms, uint8_t *crc16_ls, uint8_t *padding_1,uint8_t *padding_2,uint8_t *padding_3){
+                           uint8_t *voltage_ls, uint8_t *voltage_ms, uint8_t *current, uint8_t *wattHour_ls,
+                           uint8_t *wattHour_ms, uint8_t *igbtTemp, uint8_t *glassSurfaceTemp_ls, uint8_t *glassSurfaceTemp_ms,
+													 uint8_t *crc16_ls, uint8_t *crc16_ms, uint8_t *padding_1,uint8_t *padding_2,uint8_t *padding_3){
 		
 		I2C_Slave_Receiver();	 
     // Parse received data into respective fields (as described earlier)
@@ -225,16 +191,16 @@ int receive_data_from_pbci(uint8_t *memory_address, uint8_t *manufacturerID, uin
     *manufacturerID 		= I2C_Slave_Buffer_Rx[1];
     *plateIDReceived 		= I2C_Slave_Buffer_Rx[2];
     *errorCode 					= I2C_Slave_Buffer_Rx[3];
-    *voltage_ms					= I2C_Slave_Buffer_Rx[4]; 
-		*voltage_ls 				= I2C_Slave_Buffer_Rx[5];
+    *voltage_ls					= I2C_Slave_Buffer_Rx[4]; 
+		*voltage_ms 				= I2C_Slave_Buffer_Rx[5];
     *current 						= I2C_Slave_Buffer_Rx[6];
-    *wattHour_ms 				= I2C_Slave_Buffer_Rx[7];
-		*wattHour_ls				= I2C_Slave_Buffer_Rx[8];
+    *wattHour_ls 				= I2C_Slave_Buffer_Rx[7];
+		*wattHour_ms				= I2C_Slave_Buffer_Rx[8];
     *igbtTemp 					= I2C_Slave_Buffer_Rx[9];
-    *glassSurfaceTemp_ms 	= I2C_Slave_Buffer_Rx[10];
-		*glassSurfaceTemp_ls	= I2C_Slave_Buffer_Rx[11];
-		*crc16_ms 						= I2C_Slave_Buffer_Rx[12];										 
-    *crc16_ls 						= I2C_Slave_Buffer_Rx[13];  // Set CRC to 0 for now, since CRC is not calculated currently
+    *glassSurfaceTemp_ls 	= I2C_Slave_Buffer_Rx[10];
+		*glassSurfaceTemp_ms	= I2C_Slave_Buffer_Rx[11];
+		*crc16_ls 						= I2C_Slave_Buffer_Rx[12];										 
+    *crc16_ms 						= I2C_Slave_Buffer_Rx[13];  // Set CRC to 0 for now, since CRC is not calculated currently
 		*padding_1 						= I2C_Slave_Buffer_Rx[14];
 		*padding_2 						= I2C_Slave_Buffer_Rx[15];
 		*padding_3 						= I2C_Slave_Buffer_Rx[16];	
@@ -329,7 +295,7 @@ void I2C_Slave_Receiver(void)
 {
   /* Check on Slave Receiver ADRS condition and clear it, added timeout condition                           */
 	u32 reg;
-	uint32_t timeout; 
+	uint8_t timeout; 
 	timeout = TIMEOUT_VALUE;
 	while (!I2C_CheckStatus(HTCFG_I2C_SLAVE_PORT, I2C_SLAVE_ACK_RECEIVER_ADDRESS)){
 		reg = HTCFG_I2C_SLAVE_PORT ->SR;
@@ -338,29 +304,33 @@ void I2C_Slave_Receiver(void)
 		else if(reg & I2C_FLAG_RXDNE){
 			for (Rx_Index= 0; Rx_Index<=BufferSize;Rx_Index++){
 						I2C_Slave_Buffer_Rx[Rx_Index] = I2C_ReceiveData(HTCFG_I2C_SLAVE_PORT);
-						if(Rx_Index == BufferSize)clear_request_line(0);															// clear GPIO to stop further data transfer
+						if(Rx_Index == BufferSize){
+						//	clear_request_line(0);															// clear GPIO to stop further data transfer
 					}
-		//I2C_Slave_Buffer_Rx[Rx_Index++] = I2C_ReceiveData(HTCFG_I2C_SLAVE_PORT);
+			}
 		}   //handle condition for RXDNE
-		//else if(reg & I2C_FLAG_ADRS){}																											 // ADRS condition not handled
 		else if(--timeout == 0) return;
 	}
-    /* Check on Slave Receiver RXDNE condition                                                              */
-		while (!I2C_CheckStatus(HTCFG_I2C_SLAVE_PORT, I2C_SLAVE_RX_NOT_EMPTY)){
+  /* Check on Slave Receiver RXDNE condition                                                              */
+	while (!I2C_CheckStatus(HTCFG_I2C_SLAVE_PORT, I2C_SLAVE_RX_NOT_EMPTY)){
 			if(--timeout == 0) return;}
-		  /* Receive data                                                                                           */
-		while (Rx_Index < BufferSize){
-				/* Store received data on I2Cx                                                                          */
-				I2C_Slave_Buffer_Rx[Rx_Index++] = I2C_ReceiveData(HTCFG_I2C_SLAVE_PORT);
-				if(Rx_Index >= BufferSize){
-						Rx_Index=0;
-						clear_request_line(0);																												// clear GPIO to stop further data transfer
-					}
+  
+	/* Receive data                                                                                         */
+  while (Rx_Index < BufferSize){
+	/* Store received data on I2Cx                                                                          */
+	  	I2C_Slave_Buffer_Rx[Rx_Index++] = I2C_ReceiveData(HTCFG_I2C_SLAVE_PORT);
+			if(Rx_Index >= BufferSize){
+					Rx_Index=0;
+						//clear_request_line(0);																												// clear GPIO to stop further data transfer
 				}
-//		}
+	}
+			
+	if(!I2C_GetFlagStatus(HTCFG_I2C_SLAVE_PORT, I2C_FLAG_RXDNE)){
+		clear_request_line(0);
+	}
   /* Check on Slave Receiver STO condition                                                                  */
-  while (!I2C_CheckStatus(HTCFG_I2C_SLAVE_PORT, I2C_SLAVE_STOP_DETECTED)){
-		// Reset I2C peripheral if bus is busy
+  while (!I2C_CheckStatus(HTCFG_I2C_SLAVE_PORT, I2C_SLAVE_STOP_DETECTED)){	
+// Reset I2C peripheral if bus is busy
 //		if (I2C_GetFlagStatus(HTCFG_I2C_SLAVE_PORT, I2C_FLAG_BUSBUSY)) {
 //			I2C_Reset();
 //			return;
@@ -376,7 +346,7 @@ void I2C_Slave_Transmitter(void)
 {
   /* Check on Slave Receiver ADRS condition and clear it                                                    */
   u32 reg;
-	uint32_t timeout; 
+	uint8_t timeout; 
 	timeout = TIMEOUT_VALUE;
 
 		while (!I2C_CheckStatus(HTCFG_I2C_SLAVE_PORT, I2C_SLAVE_ACK_TRANSMITTER_ADDRESS)){
